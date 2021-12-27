@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="javafx">
+    <CLASSES>
+      <root url="file:///Library/Java/JavaVirtualMachines/jdk-15.0.2.jdk/Contents/Home/lib/javafx" />
+    </CLASSES>
+    <JAVADOC />
+    <NATIVE>
+      <root url="file:///Library/Java/JavaVirtualMachines/jdk-15.0.2.jdk/Contents/Home/lib/javafx" />
+    </NATIVE>
+    <SOURCES />
+    <jarDirectory url="file:///Library/Java/JavaVirtualMachines/jdk-15.0.2.jdk/Contents/Home/lib/javafx" recursive="false" />
+  </library>
+</component>
