@@ -28,6 +28,18 @@ class MyOval extends MyShape {
         return axisB / 2;
     }
 
+    public int getWidth() {
+        return axisA;
+    }
+
+    public int getHeight() {
+        return axisB;
+    }
+
+    public MyPoint getCenter() {
+        return new MyPoint(getX(), getY(), null);
+    }
+
     public MyRectangle getInnerRect(MyColor color) {
         return new MyRectangle(
                 new MyPoint(getX() - (int) (getA() * Math.sqrt(2) / 2),

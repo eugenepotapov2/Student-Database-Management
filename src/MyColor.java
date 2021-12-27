@@ -8,6 +8,7 @@ enum MyColor {
     BLUE(0, 0, 255, 255),
     WHITE(255, 255, 255, 255),
     BLACK(0, 0, 0, 255),
+    GRAY(128, 128, 128, 255),
     RANDOM(0, 0, 0, 255);
 
     private int r, g, b, a;

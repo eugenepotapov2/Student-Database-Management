@@ -1,6 +1,6 @@
 import javafx.scene.canvas.GraphicsContext;
 
-public class MyPolygon extends MyShape {
+class MyPolygon extends MyShape {
     private final int n, r;
 
     public MyPolygon(MyPoint p, int n, int r, MyColor color) {

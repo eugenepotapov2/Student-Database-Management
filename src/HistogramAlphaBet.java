@@ -1,12 +1,10 @@
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import javafx.scene.canvas.GraphicsContext;
+
+import java.util.*;
 import java.util.stream.Collectors;
 
 class HistogramAlphaBet {
     Map<Character, Integer> frequency = new HashMap<Character, Integer>();
-    Map<Character, Double> probability = new HashMap<Character, Double>();
 
     HistogramAlphaBet() {
     }
@@ -32,23 +30,6 @@ class HistogramAlphaBet {
         return frequency;
     }
 
-    public Integer getCumulativeFrequency() {
-        return frequency.values().stream().reduce(0, Integer::sum);
-    }
-
-    public Map<Character, Double> getProbability() {
-        double inverseCumulativeFrequency = 1.0 / getCumulativeFrequency();
-        for (Character Key : frequency.keySet()) {
-            probability.put(Key, (double) frequency.get(Key) * inverseCumulativeFrequency);
-        }
-        return probability.entrySet().stream().sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e2, LinkedHashMap::new));
-    }
-
-    public Double getSumOfProbability() {
-        return probability.values().stream().reduce(0.0, Double::sum);
-    }
-
     public Map<Character, Integer> sortUpFrequency() {
         return frequency.entrySet().stream().sorted(Map.Entry.comparingByValue())
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e2, LinkedHashMap::new));
@@ -59,11 +40,69 @@ class HistogramAlphaBet {
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e2, LinkedHashMap::new));
     }
 
+    public Integer getCumulativeFrequency() {
+        return frequency.values().stream().reduce(0, Integer::sum);
+    }
+
     public String toString() {
         String output = "Frequency of Characters\n";
         for (Character K : frequency.keySet()) {
             output += K + ": " + frequency.get(K) + "\n";
         }
         return output;
+    }
+
+    class MyPieChart {
+        Map<Character, Double> probability = new HashMap<Character, Double>();
+        Map<Character, Slice> slices = new HashMap<Character, Slice>();
+        Map<Character, Double> tempProbability = new HashMap<Character, Double>();
+        Map<Character, Integer> gradesMap = new HashMap<Character, Integer>();
+
+        int N;
+        MyPoint pCenter;
+        int radius;
+        double rotateAngle;
+        double startAngle = 90.0;
+        double restProb = 1.0;
+
+        MyPieChart(Map<Character, Integer> gradesMap, MyPoint p, int r, double rotateAngle) {
+            this.gradesMap = gradesMap;
+            this.pCenter = p;
+            this.radius = r;
+            this.rotateAngle = Optional.ofNullable(rotateAngle).orElse(0.0);
+            probability = getProbability();
+            slices = getMyPieChart();
+        }
+
+        public Map<Character, Double> getProbability() {
+            double inverseCumulativeFrequency = 1.0 / (gradesMap.values().stream().reduce(0, Integer::sum));
+            for (Character Key : gradesMap.keySet()) {
+                probability.put(Key, (double) gradesMap.get(Key) * inverseCumulativeFrequency);
+            }
+            return probability.entrySet().stream().sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e2, LinkedHashMap::new));
+        }
+
+        public Double getSumOfProbability() {
+            return probability.values().stream().reduce(0.0, Double::sum);
+        }
+
+        public Map<Character, Slice> getMyPieChart() {
+
+            for (Character Key : gradesMap.keySet()) {
+                double angle = 360.0 * probability.get(Key);
+                slices.put(Key, new Slice(pCenter, radius, startAngle, angle, MyColor.RANDOM, Key));
+                startAngle += angle;
+            }
+            return slices;
+        }
+
+        public void draw(GraphicsContext gc) {
+            int v1 = 650, v2 = 200;
+            for (Character Key : gradesMap.keySet()) {
+                slices.get(Key).draw(gc, v1, v2, gradesMap.get(Key));
+                v2 += 50;
+            }
+        }
     }
 }
